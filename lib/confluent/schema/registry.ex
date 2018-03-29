@@ -1,180 +1,55 @@
 defmodule Styx.Confluent.Schema.Registry do
 
-  @content_type "application/vnd.schemaregistry.v1+json"
+  defmacro __using__(_) do
+    quote location: :keep do
 
-  @moduledoc """
-  API wrapper for the Confluent Schema Registry
-  Available methods:
-    * config/1
-    * subjects/1
-    * versions/2
-    * version/3
-    * latest/2
-    * schema/2
-    * delete/2
-    * delete/3
-    * register/3
-    * check/3
-    * test/4
-    * update_compatibility/2
-    * update_compatibility/3
-  """
+      import Styx.Confluent.Schema.Avro
+      import Styx.Confluent.Schema.Registry, only: [schema: 2, set_namespace: 1]
 
-  @doc """
-  Get top level config.
-  ```
-    Styx.Confluent.Schema.Registry.config("http://localhost:8081")
-  ```
-  """
-
-  def config(host), do: request(:get, host, "config")
-
-  @doc """
-  List all subjects.
-  ```
-    Styx.Confluent.Schema.Registry.subjects("http://localhost:8081")
-  ```
-  """
-  def subjects(host), do: request(:get, host, "subjects")
-
-  @doc """
-  List all schema versions registered under the subject "value"
-  ```
-    Styx.Confluent.Schema.Registry.versions("http://localhost:8081", "value")
-  ```
-  """
-  def versions(host, subject), do: request(:get, host, "subjects/#{subject}/versions")
-
-  @doc """
-  Fetch version 1 of the schema registered under subject "value"
-  ```
-    Styx.Confluent.Schema.Registry.version("http://localhost:8081", "value", 1)
-  ```
-  """
-  def version(host, subject, version), do: request(:get, host, "subjects/#{subject}/versions/#{version}")
-
-  @doc """
-  Fetch latest version of the schema registered under subject "value"
-  ```
-    Styx.Confluent.Schema.Registry.latest("http://localhost:8081", "value")
-  ```
-  """
-  def latest(host, subject), do: version(host, subject, "latest")
-
-  @doc """
-  Fetch a schema by globally unique id 1
-  ```
-    Styx.Confluent.Schema.Registry.schema("http://localhost:8081", 1)
-  ```
-  """
-  def schema(host, id), do: request(:get, host, "schemas/ids/#{id}")
-
-  @doc """
-  Delete all versions of the schema registered under subject "value"
-  ```
-    Styx.Confluent.Schema.Registry.delete("http://localhost:8081", "value")
-  ```
-  """
-  def delete(host, subject), do: request(:delete, host, "subjects/#{subject}")
-
-  @doc """
-  Delete version 1 of the schema registered under subject "value"
-  ```
-    Styx.Confluent.Schema.Registry.delete("http://localhost:8081", "value", 1)
-  ```
-  """
-  def delete(host, subject, version), do: request(:delete, host, "subjects/#{subject}/versions/#{version}")
-
-  @doc """
-  Register a new version of a schema under the subject "Kafka-key"
-  ```
-    Styx.Confluent.Schema.Registry.register("http://localhost:8081", "value", %{"type" => "string"})
-  ```
-  """
-  def register(host, subject, schema), do: request(:post, host, "subjects/#{subject}/versions", schema)
-
-  @doc """
-  Check whether a schema has been registered under subject "value"
-  ```
-    Styx.Confluent.Schema.Registry.check("http://localhost:8081", "value", %{"type" => "string"})
-  ```
-  """
-  def check(host, subject, schema), do: request(:post, host, "subjects/#{subject}", schema)
-
-  @doc """
-  Test compatibility of a schema with specific version of schema under subject "value"
-  ```
-    Styx.Confluent.Schema.Registry.test("http://localhost:8081", "value", %{"type" => "string"})
-  ```
-  """
-  def test(host, subject, schema, version \\ "latest"), do: request(:post, host, "compatibility/subjects/#{subject}/versions/#{version}", schema)
-
-  @doc """
-  Update compatibility requirements globally
-  ```
-    Styx.Confluent.Schema.Registry.update_compatibility("http://localhost:8081", "NONE")
-  ```
-  """
-  def update_compatibility(host, comp), do: request(:put, host, "config", comp)
-
-  @doc """
-  Update compatibility requirements under the subject "value"
-  ```
-    Styx.Confluent.Schema.Registry.update_compatibility("http://localhost:8081", "value", "NONE")
-  ```
-  """
-  def update_compatibility(host, subject, comp), do: request(:put, host, "config/#{subject}", comp)
-
-
-  #
-  # Private
-  #
-
-  defp request(method, host, path) when method == :get or method == :delete do
-    case apply(HTTPoison, method, ["#{host}/#{path}"]) do
-
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, Poison.decode! body}
-
-      {_, %HTTPoison.Response{body: body}} ->
-        {:error, Poison.decode! body }
-
-      error ->
-        error
-
+      @namespace nil
+      @schema_name __MODULE__
+      Module.register_attribute(__MODULE__, :fields, accumulate: true)
     end
   end
 
-  defp request(method, host, path, content) when is_binary(content) do
-    body = Poison.encode! %{"compatibility" => content}
+  defmacro schema(namespace, [do: block]) do
+    register_schema(namespace, block)
+  end
 
-    case apply(HTTPoison, method, ["#{host}/#{path}", body, [{"Content-Type", @content_type}]]) do
-
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, Poison.decode! body}
-
-      {_, %HTTPoison.Response{body: body}} ->
-        {:error, Poison.decode! body }
-
-      error ->
-        error
-
+  defmacro set_namespace(namespace) do
+    quote do
+      if @namespace == nil do
+        @namespace unquote(namespace)
+      end
     end
   end
 
-  defp request(method, host, path, content) do
-    body = Poison.encode! %{"schema" => Poison.encode!(content)}
+  defp register_schema(namespace, block) do
+    quote do
+      import Styx.Confluent.Schema.Avro
+      Styx.Confluent.Schema.Registry.set_namespace(unquote(namespace))
 
-    case apply(HTTPoison, method, ["#{host}/#{path}", body, [{"Content-Type", @content_type}]]) do
+      try do
+        unquote(block)
+      after
+        :ok
+      end
 
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, Poison.decode! body}
+      # register schema on genserver boot 
+      #   avro_schema = build_schema(@namespace, @fields, @namespace)
+      #   Styx.Confluent.Schema.Request.send_to(:register, @namespace, avro_schema)
+      # deps not yet linked
 
-      {_, %HTTPoison.Response{body: body}} ->
-        {:error, Poison.decode! body }
+      def fields, do: @fields
+      def schema_name, do: @schema_name
+      def namespace, do: @namespace
 
-      error ->
-        error
+      def register do
+        avro_schema = build_schema(@namespace, @fields)
+        Styx.Confluent.Schema.API.register(
+          Styx.Confluent.Schema.Request.host(), @namespace, avro_schema
+        )
+      end
 
     end
   end
