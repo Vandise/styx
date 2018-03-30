@@ -35,11 +35,6 @@ defmodule Styx.Confluent.Schema.Registry do
         :ok
       end
 
-      # register schema on genserver boot 
-      #   avro_schema = build_schema(@namespace, @fields, @namespace)
-      #   Styx.Confluent.Schema.Request.send_to(:register, @namespace, avro_schema)
-      # deps not yet linked
-
       def fields, do: @fields
       def schema_name, do: @schema_name
       def namespace, do: @namespace

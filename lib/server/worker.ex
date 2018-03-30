@@ -11,6 +11,12 @@ defmodule Styx.Server.Worker do
 
       @server_name __MODULE__
 
+      def server_name, do: @server_name
+
+      # #
+      #   GenServer worker defaults
+      # #
+
       def start_link(_arg) do
         GenServer.start_link(__MODULE__, %State{}, name: @server_name)
       end
