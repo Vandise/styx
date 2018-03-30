@@ -1,6 +1,7 @@
 defmodule Support.Workers.MockWorker do
 
   use Styx.Confluent.Schema.Registry
+  use Styx.Server.Worker
 
   schema "com.vandise.banderson" do
     required "username", :string

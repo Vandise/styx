@@ -2,7 +2,7 @@ defmodule Styx.Confluent.Schema.Registry do
 
   defmacro __using__(_) do
     quote location: :keep do
-
+      require Logger
       import Styx.Confluent.Schema.Avro
       import Styx.Confluent.Schema.Registry, only: [schema: 2, set_namespace: 1]
 
@@ -46,9 +46,10 @@ defmodule Styx.Confluent.Schema.Registry do
 
       def register do
         avro_schema = build_schema(@namespace, @fields)
-        Styx.Confluent.Schema.API.register(
+        {status, _} = Styx.Confluent.Schema.API.register(
           Styx.Confluent.Schema.Request.host(), @namespace, avro_schema
         )
+        if status == :ok, do: Logger.info("Schema #{@namespace} registered.")
       end
 
     end

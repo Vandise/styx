@@ -29,7 +29,8 @@ defmodule Styx.MixProject do
       {:httpoison, "~> 1.0"},
       {:poison, "~> 3.1"},
       {:bypass, "~> 0.8", only: :test},
-      {:ex_doc, "~> 0.14", only: :dev}
+      {:ex_doc, "~> 0.14", only: :dev},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 end
