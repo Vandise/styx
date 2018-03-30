@@ -7,5 +7,5 @@ config :styx, Styx.Confluent.Schema.Registry,
 config :kafka_ex,
   # a list of brokers to connect to in {"HOST", port} format
   brokers: [
-    {"192.168.99.10", 9092}
+    {"192.168.99.100", 9092}
   ]
