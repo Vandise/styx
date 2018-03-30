@@ -1,4 +1,4 @@
-defmodule Styx.Server.Worker do
+defmodule Styx.Confluent.Server.Worker do
 
   defmacro __using__(_) do
     quote location: :keep do

@@ -1,4 +1,4 @@
-defmodule Styx.Server.WorkerTest do
+defmodule Styx.Confluent.Server.WorkerTest do
   use ExUnit.Case
   import Mock
 
