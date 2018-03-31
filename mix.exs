@@ -32,7 +32,8 @@ defmodule Styx.MixProject do
       {:ex_doc, "~> 0.14", only: :dev},
       {:mock, "~> 0.3.0", only: :test},
       {:kafka_ex, "~> 0.8.2"},
-      {:snappy, git: "https://github.com/fdmanana/snappy-erlang-nif"}
+      {:snappy, git: "https://github.com/fdmanana/snappy-erlang-nif"},
+      {:avro_ex, "~> 0.1.0-beta.0"}
     ]
   end
 end

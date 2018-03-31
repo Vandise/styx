@@ -42,9 +42,9 @@ defmodule Styx.Confluent.Schema.Registry do
       def register do
         avro_schema = build_schema(@namespace, @fields)
         {status, _} = Styx.Confluent.Schema.API.register(
-          Styx.Confluent.Schema.Request.host(), @namespace, avro_schema
+          Styx.Confluent.Schema.Request.host(), "#{@namespace}-value", avro_schema
         )
-        if status == :ok, do: Logger.info("Schema #{@namespace} registered.")
+        if status == :ok, do: Logger.info("Schema #{@namespace}-value registered.")
       end
 
     end

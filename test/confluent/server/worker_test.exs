@@ -18,7 +18,7 @@ defmodule Styx.Confluent.Server.WorkerTest do
     host = Styx.Confluent.Schema.Request.host()
     Worker.start_link([])
     assert called API.register(
-      host, Worker.namespace(), schema
+      host, "#{Worker.namespace()}-value", schema
     )
   end
 end
