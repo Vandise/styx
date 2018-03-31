@@ -4,7 +4,7 @@ defmodule Confluent.Schema.RegistryTest do
   require Support.Workers.MockWorker
 
   test "schema macro sets namespace" do
-    assert Support.Workers.MockWorker.namespace() == "com.vandise.banderson.accounts"
+    assert Support.Workers.MockWorker.namespace() == "styx.registry.accounts"
   end
 
   test "schema macro sets schema name" do
@@ -25,7 +25,7 @@ defmodule Confluent.Schema.RegistryTest do
       Support.Workers.MockWorker.namespace(),
       Support.Workers.MockWorker.fields()
     )
-    assert result == %{fields: [%{name: "country", type: [:string, "null"]}, %{name: "password", type: :string}, %{name: "username", type: :string}], name: "com.vandise.banderson.accounts", namespace: "com.vandise.banderson.accounts", type: "record"}
+    assert result == %{fields: [%{name: "country", type: [:string, "null"]}, %{name: "password", type: :string}, %{name: "username", type: :string}], name: "styx.registry.accounts", namespace: "styx.registry.accounts", type: "record"}
   end
 
 end
