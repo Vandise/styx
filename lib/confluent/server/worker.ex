@@ -5,11 +5,7 @@ defmodule Styx.Confluent.Server.Worker do
       use GenServer
       require Logger
 
-      defmodule State do
-        defstruct server_name: __MODULE__
-      end
-
-      @server_name __MODULE__
+      @server_name Enum.join(Module.split(__MODULE__), "") |> String.to_atom
 
       def server_name, do: @server_name
 
@@ -18,7 +14,7 @@ defmodule Styx.Confluent.Server.Worker do
       # #
 
       def start_link(_arg) do
-        GenServer.start_link(__MODULE__, %State{}, name: @server_name)
+        GenServer.start_link(__MODULE__, %{}, name: @server_name)
       end
 
       def init(args) do

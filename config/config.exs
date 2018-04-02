@@ -30,6 +30,9 @@ use Mix.Config
 config :styx,
   env: Mix.env
 
+config :logger,
+  level: :debug
+
 config :kafka_ex,
   # the default consumer group for worker processes, must be a binary (string)
   #    NOTE if you are on Kafka < 0.8.2 or if you want to disable the use of

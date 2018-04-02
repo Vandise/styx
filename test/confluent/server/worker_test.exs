@@ -6,7 +6,7 @@ defmodule Styx.Confluent.Server.WorkerTest do
   alias Support.Workers.MockWorker, as: Worker
 
   test "registers the module as the server name" do
-    assert Worker.server_name == Support.Workers.MockWorker
+    assert Worker.server_name == :SupportWorkersMockWorker
   end
 
   test_with_mock "server registers schema on link", API,
