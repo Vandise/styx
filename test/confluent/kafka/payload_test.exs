@@ -13,7 +13,7 @@ defmodule Confluent.Kafka.PayloadTest do
       "password" => "required",
       "country" => "optional"
     }
-    {:ok, payload} = Styx.Confluent.Kafka.Payload.as_avro(schema, record)
+    {:ok, payload} = Styx.Confluent.Kafka.Payload.Avro.create(schema, record)
     assert payload == <<0, 16, 111, 112, 116, 105, 111, 110, 97, 108, 16, 114, 101, 113, 117, 105, 114, 101, 100, 16, 114, 101, 113, 117, 105, 114, 101, 100>>
   end
 

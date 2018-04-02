@@ -8,7 +8,7 @@ defmodule Styx.Confluent.Schema.Registry do
 
       @namespace nil
       @schema_name __MODULE__
-      Module.register_attribute(__MODULE__, :fields, accumulate: true)
+      Module.register_attribute(__MODULE__, :crons, accumulate: true)
     end
   end
 
