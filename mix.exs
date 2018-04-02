@@ -16,7 +16,7 @@ defmodule Styx.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :kafka_ex, :snappy]
+      extra_applications: [:logger, :quantum, :kafka_ex, :snappy]
     ]
   end
 
@@ -33,7 +33,9 @@ defmodule Styx.MixProject do
       {:mock, "~> 0.3.0", only: :test},
       {:kafka_ex, "~> 0.8.2"},
       {:snappy, git: "https://github.com/fdmanana/snappy-erlang-nif"},
-      {:avro_ex, "~> 0.1.0-beta.0"}
+      {:avro_ex, "~> 0.1.0-beta.0"},
+      {:quantum, ">= 1.9.1"},
+      {:timex, "~> 3.0"}
     ]
   end
 end
