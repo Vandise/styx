@@ -1,7 +1,8 @@
 use Mix.Config
 
-config :styx, Styx.Confluent.Server.Worker,
-  namespace: Styx.Workers
+config :styx, Styx.Zookeeper,
+  namespace: Styx.Workers,
+  namespace_depth: 2
 
 config :styx, Styx.Confluent.Schema.Registry,
   host: "http://192.168.99.100",
