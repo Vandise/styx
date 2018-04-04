@@ -1,11 +1,14 @@
 defmodule Styx.SchemaRegistry.Definition.Schema do
 
+  alias Styx.SchemaRegistry.Definition.Schema, as: SchemaDef
+
   @moduledoc """
   Implements macros to generate an avro schema
 
   Available macros:
      * schema/2
      * set_namespace/1
+     * attribute_accessors/0
 
   ## Use:
     ```
@@ -51,7 +54,35 @@ defmodule Styx.SchemaRegistry.Definition.Schema do
       try do
         unquote(block)
       after
+        SchemaDef.attribute_accessors()
+        SchemaDef.register()
         :ok
+      end
+    end
+  end
+
+  @doc """
+  generates the fields() and namespace() functions
+  """
+  defmacro attribute_accessors() do
+    quote do
+      def fields, do: @fields
+      def namespace, do: @namespace
+    end
+  end
+
+  @doc """
+  generates the register(postfix \\ "value") function
+  """
+  defmacro register() do
+    quote do
+      require Logger
+      def register(postfix \\ "value") do
+        avro_schema = Styx.SchemaRegistry.Avro.Schema.generate(@namespace, @fields)
+        {status, _} = Styx.Confluent.Schema.API.register(
+          Styx.Confluent.Schema.Request.host(), "#{@namespace}-" <> postfix, avro_schema
+        )
+        if status == :ok, do: Logger.info("Schema #{@namespace}-#{postfix} registered.")
       end
     end
   end

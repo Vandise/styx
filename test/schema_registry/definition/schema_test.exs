@@ -10,8 +10,6 @@ defmodule Styx.SchemaRegistry.Definition.SchemaTest do
       required "username", :string
     end
 
-    def fields, do: @fields
-    def namespace, do: @namespace
   end
 
   describe "schema/2" do
