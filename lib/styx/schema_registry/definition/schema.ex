@@ -9,6 +9,7 @@ defmodule Styx.SchemaRegistry.Definition.Schema do
      * schema/2
      * set_namespace/1
      * attribute_accessors/0
+     * register/0
 
   ## Use:
     ```
