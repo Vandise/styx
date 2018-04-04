@@ -1,6 +1,8 @@
 defmodule Styx.SchemaRegistry.Definition.ValueTest do
   use ExUnit.Case
 
+  doctest Styx.SchemaRegistry.Definition.Value
+
   defmodule StyxTest.Values do
     use Styx.SchemaRegistry.Definition.Value
 
