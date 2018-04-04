@@ -9,7 +9,6 @@ defmodule Styx.SchemaRegistry.Definition.SchemaTest do
     schema "edu.uwsp.banderson.styx" do
       required "username", :string
     end
-
   end
 
   describe "schema/2" do

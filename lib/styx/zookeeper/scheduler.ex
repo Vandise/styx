@@ -1,8 +1,5 @@
 defmodule Styx.Zookeeper.Scheduler do
 
-  use Quantum.Scheduler, otp_app: :styx
-  @settings Application.fetch_env! :styx, Styx.Zookeeper
-
   @moduledoc """
   Handles the scheduling of workers
 
@@ -19,6 +16,9 @@ defmodule Styx.Zookeeper.Scheduler do
     ```
   """
 
+  use Quantum.Scheduler, otp_app: :styx
+  @settings Application.fetch_env! :styx, Styx.Zookeeper
+
   defp module_list() do
     :application.get_key(:styx, :modules)
   end
@@ -28,14 +28,16 @@ defmodule Styx.Zookeeper.Scheduler do
     Configured in: :styx, Styx.Zookeeper
   """
   def get_workers() do
-    get_workers module_list()
+    with {:ok, list} <- module_list() do
+      get_workers list
+    end
   end
 
   @doc """
   Filters out workers in a pre-defined list
-  Takes in a tuple.
+  Takes in a list.
   """
-  def get_workers({:ok, list}) do
+  def get_workers(list) do
     Enum.filter(list, fn(m) ->
       Module.split(m) |> Enum.take(@settings[:namespace_depth]) == Module.split(@settings[:namespace])
     end)

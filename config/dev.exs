@@ -2,7 +2,9 @@ use Mix.Config
 
 config :styx, Styx.Zookeeper,
   namespace: Styx.Workers,
-  namespace_depth: 2
+  namespace_depth: 2,
+  host: "192.168.99.100",
+  port: 2181
 
 config :styx, Styx.Confluent.Schema.Registry,
   host: "http://192.168.99.100",

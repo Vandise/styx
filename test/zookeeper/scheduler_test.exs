@@ -13,7 +13,7 @@ defmodule Styx.Zookeeper.SchedulerTest do
   describe "get_workers/1" do
     test "filters a list of workers from a list" do
       expected = [Test.Support.Workers.MockWorker, Test.Support.Workers.AnotherWorker]
-      assert Styx.Zookeeper.Scheduler.get_workers({:ok, expected}) == expected
+      assert Styx.Zookeeper.Scheduler.get_workers(expected) == expected
     end
   end
 end

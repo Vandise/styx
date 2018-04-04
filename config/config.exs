@@ -28,7 +28,8 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 config :styx,
-  env: Mix.env
+  env: Mix.env,
+  registry_key: Styx.Registry
 
 config :logger,
   level: :debug
