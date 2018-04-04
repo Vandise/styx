@@ -18,7 +18,7 @@ defmodule Styx.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :quantum, :kafka_ex, :snappy]
+      extra_applications: [:logger, :quantum, :kafka_ex]
     ]
   end
 

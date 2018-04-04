@@ -18,21 +18,6 @@ defmodule Styx.SchemaRegistry.Definition.Value do
     ```
   """
 
-  #defmacro generate(namespace, fields, type \\ "record") do
-  #  quote do
-  #    build_schema unquote(namespace), unquote(fields), unquote(type)
-  #  end
-  #end
-
-  #def build_schema(namespace, fields, type \\ "record") do
-  #  %{
-  #    type: type,
-  #    name: namespace,
-  #    namespace: namespace,
-  #    fields: fields
-  #  }
-  #end
-
   @doc """
   Value structure containing the name and data type.
 
@@ -109,7 +94,7 @@ defmodule Styx.SchemaRegistry.Definition.Value do
   """
   defmacro field(mod, name, type, true) do
     quote do
-      Module.put_attribute(unquote(mod), :fields, %Styx.SchemaRegistry.Definition.Value{ name: unquote(name), type: unquote(type) })
+      Module.put_attribute(unquote(mod), :fields, %Styx.SchemaRegistry.Avro.Field{ name: unquote(name), type: unquote(type) })
     end
   end
 
@@ -129,7 +114,7 @@ defmodule Styx.SchemaRegistry.Definition.Value do
   """
   defmacro field(mod, name, type, false) do
     quote do
-      Module.put_attribute(unquote(mod), :fields, %Styx.SchemaRegistry.Definition.Value{ name: unquote(name), type: [ unquote(type), unquote(@nulltype) ] })
+      Module.put_attribute(unquote(mod), :fields, %Styx.SchemaRegistry.Avro.Field{ name: unquote(name), type: [ unquote(type), unquote(@nulltype) ] })
     end
   end
 
