@@ -36,7 +36,8 @@ defmodule Styx.MixProject do
       {:kafka_ex, "~> 0.8.2"},
       {:avro_ex, "~> 0.1.0-beta.0"},
       {:quantum, ">= 1.9.1"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:zookeeper, github: "vishnevskiy/zookeeper-elixir"}
     ]
   end
 
