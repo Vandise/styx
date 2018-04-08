@@ -30,6 +30,8 @@ defmodule Styx.Kafka.Worker do
   @doc """
   Gets the next scheduled time for the worker to run relative to now()
   """
+  # todo:
+  #   move this into the cron module
   def next_run(m) do
     {:ok, t} = m.cron_schedule() |> Crontab.Scheduler.get_next_run_date(DateTime.utc_now() |> DateTime.to_naive)
     t
@@ -53,6 +55,9 @@ defmodule Styx.Kafka.Worker do
       |> Styx.Zookeeper.Server.try_lock(fn() -> worker_locked_process(m) end)
   end
 
+  # todo: add check to see if time is in the past
+  #       means another worker has ran the job in a different Styx client
+  #       when it acquires a lock but hasn't timed out
   defp worker_locked_process(m) do
     dt_s = next_run_dt(m) |> DateTime.to_string
     Styx.Zookeeper.Register.set_data(m, dt_s, false)

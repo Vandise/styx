@@ -65,7 +65,10 @@ defmodule Styx.Zookeeper.Register do
 
   # public functions
 
-
+  @doc """
+  Creates the path_name in zookeeper
+    /jobs/Module.Name
+  """
   def path_name(m) do
     "/jobs/#{m}"
   end
@@ -73,6 +76,7 @@ defmodule Styx.Zookeeper.Register do
   @doc """
   Creates a new path in Zookeeper
     /jobs/Module.Name
+    needs_lock should always be false
   """
   def create_path(m, needs_lock \\ false) do
     path = path_name(m)
