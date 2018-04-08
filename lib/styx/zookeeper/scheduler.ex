@@ -58,6 +58,7 @@ defmodule Styx.Zookeeper.Scheduler do
   Registers a module / job and adds it to the scheduler
   """
   def register_job(m) do
+    Styx.Zookeeper.Register.create_path(m)
     new_job()
       |> Quantum.Job.set_name(m)
       |> Quantum.Job.set_schedule(m.cron_schedule())

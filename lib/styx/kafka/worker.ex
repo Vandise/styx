@@ -4,6 +4,7 @@
 defmodule Styx.Kafka.Worker do
 
   import Crontab.CronExpression
+  require Logger
 
   @moduledoc """
   Handles the execution of workers
@@ -48,23 +49,21 @@ defmodule Styx.Kafka.Worker do
   end
 
   defp worker_process(m) do
-    path = "/jobs/#{m}"
-    Styx.Zookeeper.Server.try_lock(path, fn() -> worker_lock_process(m, path) end)
+    Styx.Zookeeper.Register.path_name(m)
+      |> Styx.Zookeeper.Server.try_lock(fn() -> worker_locked_process(m) end)
   end
 
-  defp worker_lock_process(m, path) do
+  defp worker_locked_process(m) do
     dt_s = next_run_dt(m) |> DateTime.to_string
-    handle_data_update(path, m, Styx.Zookeeper.Server.set_data(path, dt_s))
+    Styx.Zookeeper.Register.set_data(m, dt_s, false)
+      |> perform(m)
+  end
+
+  defp perform(:ok, m) do
     m.perform()
   end
 
-  defp handle_data_update(path, m, {:error, :no_node}) do
-    {:ok, _} = Styx.Zookeeper.Server.create(path)
-    handle_data_update(path, m, true)
-  end
-
-  defp handle_data_update(path, m, _exists) do
-    dt_s = next_run_dt(m) |> DateTime.to_string
-    {:ok, _} = Styx.Zookeeper.Server.set_data(path, dt_s)
+  defp perform(:error, m) do
+    Logger.error "Failed to run worker: #{m}"
   end
 end

@@ -38,7 +38,7 @@ defmodule Styx.Zookeeper.Server do
   gets data with the path in zookeeper
   """
   def get_data(path) do
-    {:ok, {data, stat}} = Zookeeper.Client.get(get_pid(), path, self())
+    {:ok, {data, _stat}} = Zookeeper.Client.get(get_pid(), path, self())
     {:ok, data}
   end
 
@@ -52,7 +52,7 @@ defmodule Styx.Zookeeper.Server do
     try do
       Zookeeper.WriteLock.lock(get_pid(), path, timeout, fn -> callback.() end)
     catch
-      :exit, _ -> :error
+      :exit, s -> IO.puts(inspect(s)); :error
     end
   end
 end
