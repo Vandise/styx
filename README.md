@@ -1,6 +1,6 @@
 # Styx
 
-**TODO: Add description**
+![img](styx_flow.png)
 
 ## Installation
 
