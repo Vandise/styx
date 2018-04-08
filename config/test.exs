@@ -6,7 +6,7 @@ config :styx, Styx.Zookeeper,
   host: "192.168.99.100",
   port: 2181
 
-config :styx, Styx.Confluent.Schema.Registry,
+config :styx, Styx.SchemaRegistry,
   host: "http://192.168.99.100",
   port: 8081
 

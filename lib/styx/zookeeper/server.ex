@@ -21,6 +21,28 @@ defmodule Styx.Zookeeper.Server do
   end
 
   @doc """
+  creates a path in Zookeeper
+  """
+  def create(path) do
+    Zookeeper.Client.create(get_pid(), path)
+  end
+
+  @doc """
+  sets data with the path in zookeeper
+  """
+  def set_data(path, data) do
+    Zookeeper.Client.set(get_pid(), path, data)
+  end
+
+  @doc """
+  gets data with the path in zookeeper
+  """
+  def get_data(path) do
+    {:ok, {data, stat}} = Zookeeper.Client.get(get_pid(), path, self())
+    {:ok, data}
+  end
+
+  @doc """
   attempts a lock on the given path
   returns
     :ok,

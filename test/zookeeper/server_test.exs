@@ -1,5 +1,5 @@
 defmodule Styx.Zookeeper.ServerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
 
   doctest Styx.Zookeeper.Server
 
@@ -29,7 +29,7 @@ defmodule Styx.Zookeeper.ServerTest do
 
     test "returns :error when lock cannot be retrieved" do
       spawn(fn -> Styx.Zookeeper.Server.try_lock("/hello", &Hello.slow_process/0) end)
-      :timer.sleep(10)
+      :timer.sleep(100)
       status = Styx.Zookeeper.Server.try_lock("/hello", &Hello.fast_process/0, 1000)
       assert status == :error
     end

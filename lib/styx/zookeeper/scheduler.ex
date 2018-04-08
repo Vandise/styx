@@ -61,7 +61,7 @@ defmodule Styx.Zookeeper.Scheduler do
     new_job()
       |> Quantum.Job.set_name(m)
       |> Quantum.Job.set_schedule(m.cron_schedule())
-      |> Quantum.Job.set_task(fn -> IO.puts "Running: #{m}" end)
+      |> Quantum.Job.set_task(fn -> Styx.Kafka.Worker.execute(m) end)
       |> add_job()
   end
 end

@@ -57,6 +57,7 @@ defmodule Styx.SchemaRegistry.Definition.Schema do
       after
         SchemaDef.attribute_accessors()
         SchemaDef.register()
+        SchemaDef.perform()
         :ok
       end
     end
@@ -80,10 +81,22 @@ defmodule Styx.SchemaRegistry.Definition.Schema do
       require Logger
       def register(postfix \\ "value") do
         avro_schema = Styx.SchemaRegistry.Avro.Schema.generate(@namespace, @fields)
-        {status, _} = Styx.Confluent.Schema.API.register(
-          Styx.Confluent.Schema.Request.host(), "#{@namespace}-" <> postfix, avro_schema
+        {status, _} = Styx.SchemaRegistry.API.register(
+          Styx.SchemaRegistry.Request.host(), "#{@namespace}-" <> postfix, avro_schema
         )
         if status == :ok, do: Logger.info("Schema #{@namespace}-#{postfix} registered.")
+      end
+    end
+  end
+
+  @doc """
+  generates a default perform() function
+  """
+  defmacro perform() do
+    quote do
+      require Logger
+      def perform() do
+        Logger.warn("Default perform() called in #{__MODULE__}")
       end
     end
   end
